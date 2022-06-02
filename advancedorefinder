@@ -226,7 +226,8 @@ function compareForward(a, b)
 end
 
 function findDown(d)
-	if not d then d = loc.y end
+  -- Increase the depth to -64 for new minecraft generation.
+	if not d then d = 64 + loc.y end
 	local h = loc.y - d
 	while loc.y ~= h do
 		if not moveDown(h) then

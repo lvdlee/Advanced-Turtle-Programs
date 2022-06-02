@@ -2,8 +2,8 @@
 -- Version 1.1 1/13/2014
 
 -- Config
-local author = "Henness0666"
-local project = "Advanced-Programs"
+local author = "wizetux"
+local project = "Advanced-Turtle-Programs"
 local branch = "master"
 local screenw,screenh = term.getSize()
 
@@ -57,7 +57,7 @@ function saveTable(table,name)
 end
 
 function getLink(file)
-	return "https://raw.github.com/" .. author .. "/" .. project .. "/" .. branch .. "/" .. file
+	return "https://raw.githubusercontent.com/" .. author .. "/" .. project .. "/" .. branch .. "/" .. file
 end
 
 function download(file, name)
