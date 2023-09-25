@@ -355,16 +355,16 @@ function gui()
 	while true do
 		mopt[menustate].draw()
 		local id, key = os.pullEvent("key")
-		-- DOWN = 264 UP = 265 LEFT = 263 RIGHT = 262 ENTER = 257
-		if key == 265 and select > 1 then
+		-- DOWN = 208 UP = 200 LEFT = 203 RIGHT = 205 ENTER = 28
+		if key == 200 and select > 1 then
 			select = select-1
-		elseif key == 264 and select < #mopt[menustate].options then
+		elseif key == 208 and select < #mopt[menustate].options then
 			select = select+1
-		elseif key == 263 and select > 1 then
+		elseif key == 203 and select > 1 then
 			select = select-1
-		elseif key == 262 and select < #mopt[menustate].options then
+		elseif key == 205 and select < #mopt[menustate].options then
 			select = select+1
-		elseif key == 257 then
+		elseif key == 28 then
 			if mopt[menustate].options[select] == "exit" then
 				break
 			elseif mopt[menustate].options[select] == "orefindercontinue" then
