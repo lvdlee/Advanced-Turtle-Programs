@@ -2,7 +2,7 @@
 -- Version 1.1 1/13/2014
 
 -- Config
-local author = "wizetux"
+local author = "lvdlee"
 local project = "Advanced-Turtle-Programs"
 local branch = "master"
 local screenw,screenh = term.getSize()

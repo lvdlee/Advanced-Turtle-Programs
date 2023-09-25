@@ -9,7 +9,7 @@ local tSave = {}
 
 local ores_mined, tCordsInput, select, screenw, screenh, fuel_level, _sFile
 
-screenw,screenh = term.getSize()
+screenw, screenh = term.getSize()
 
 -- Functions
 
@@ -22,25 +22,25 @@ screenw,screenh = term.getSize()
 local loc = {}
 loc = {
 	paused = false,
-	
+
 	x = 0,
 	y = 0,
 	z = 0,
 	facing = 0,
-	
+
 	facingToAxis = {
 		[0] = { axis = 'z', unit = 1 },
 		[1] = { axis = 'x', unit = -1 },
 		[2] = { axis = 'z', unit = -1 },
 		[3] = { axis = 'x', unit = 1 }
 	},
-	
+
 	pause = function()
 		while loc.paused do
 			sleep(1)
 		end
 	end,
-	
+
 	getAxisForFacing = function()
 		return loc.facingToAxis[loc.facing]['axis'], loc.facingToAxis[loc.facing]['unit']
 	end,
@@ -66,7 +66,7 @@ loc = {
 		end
 		return false
 	end,
-	
+
 	moveBack = function()
 		loc.pause()
 		if turtle.back() then
@@ -172,14 +172,14 @@ loc = {
 		loc.face(facing)
 		return true
 	end,
-	
+
 	moveToPos = function(pos)
 		return loc.moveTo(pos.x, pos.y, pos.z, pos.facing)
 	end,
 
 	distanceTo = function(x, y, z)
 		return math.abs(x) - loc.x + math.abs(y) - loc.y + math.abs(z) - loc.z
-	end, 
+	end,
 
 	distanceToPos = function(pos)
 		return loc.distanceTo(pos.x, pos.y, pos.z)
@@ -187,14 +187,14 @@ loc = {
 }
 
 -- Orefinder
-function saveTable(table,name)
-	local file = fs.open(name,"w")
+function saveTable(table, name)
+	local file = fs.open(name, "w")
 	file.write(textutils.serialize(table))
 	file.close()
 end
 
 function loadTable(name)
-	local file = fs.open(name,"r")
+	local file = fs.open(name, "r")
 	local data = file.readAll()
 	file.close()
 	return textutils.unserialize(data)
@@ -216,24 +216,24 @@ end
 
 function compareForward(a, b)
 	loc.pause()
-	for i=a,b do
+	for i = a, b do
 		turtle.select(i)
 		if turtle.compare() then
 			return false
-		end				
+		end
 	end
 	return true
 end
 
 function findDown(d)
-  -- Increase the depth to -64 for new minecraft generation.
+	-- Increase the depth to -64 for new minecraft generation.
 	if not d then d = 64 + loc.y end
 	local h = loc.y - d
 	while loc.y ~= h do
 		if not moveDown(h) then
 			break
 		end
-		for j=1,4 do
+		for j = 1, 4 do
 			if compareForward(1, tSave.ignore) then
 				if not space() then
 					returnToChest()
@@ -253,7 +253,7 @@ function refuel(ammount)
 	end
 	local needed = ammount or loc.distanceToPos(tSave.startPos) * 2 + 1
 	if turtle.getFuelLevel() < needed then
-		for n=tSave.ignore+1,16 do
+		for n = tSave.ignore + 1, 16 do
 			loc.pause()
 			if turtle.getItemCount(n) > 0 then
 				turtle.select(n)
@@ -275,12 +275,12 @@ function refuel(ammount)
 end
 
 function unload()
-	for n=1,16 do
+	for n = 1, 16 do
 		loc.pause()
 		if turtle.getItemCount(n) > 0 then
 			turtle.select(n)
 			if n <= tSave.ignore then
-				if (not tSave.safemode  and n == 1) or n > 1 then
+				if (not tSave.safemode and n == 1) or n > 1 then
 					turtle.drop(turtle.getItemCount(n) - 1)
 				end
 			else
@@ -292,7 +292,7 @@ function unload()
 end
 
 function space()
-	for n=1,16 do
+	for n = 1, 16 do
 		if turtle.getItemCount(n) == 0 then
 			return true
 		end
@@ -301,7 +301,7 @@ function space()
 end
 
 function returnToChest()
-	local returnPos = {x = loc.x, y = loc.y, z = loc.z, facing = loc.facing}
+	local returnPos = { x = loc.x, y = loc.y, z = loc.z, facing = loc.facing }
 	local fuelNeeded = loc.distanceToPos(tSave.startPos) * 2 + 1
 	loc.moveToPos(tSave.startPos)
 	loc.face((loc.facing + 2) % 4)
@@ -312,7 +312,7 @@ function returnToChest()
 			sleep(1)
 		end
 	else
-		unload()	
+		unload()
 	end
 	loc.moveToPos(returnPos)
 end
@@ -339,8 +339,8 @@ function oreFinder()
 				returnToChest()
 			end
 			if math.fmod((loc.x + 4) - (loc.z - 1) * 2, 5) == 0 then
-				tSave.returnPos = {x = loc.x, y = loc.y, z = loc.z, facing = loc.facing}
-				saveTable( tSave, _sFile )
+				tSave.returnPos = { x = loc.x, y = loc.y, z = loc.z, facing = loc.facing }
+				saveTable(tSave, _sFile)
 				findDown()
 				loc.moveToPos(tSave.returnPos)
 				if tSave.safemode then
@@ -377,12 +377,12 @@ end
 -- GUI
 function printNormal(str, xpos, ypos)
 	term.setCursorPos(xpos, ypos)
-	term.write (str)
+	term.write(str)
 end
 
 function printReverse(str, xpos, ypos)
-	term.setCursorPos(xpos - (#str-1), ypos)
-	term.write (str)
+	term.setCursorPos(xpos - (#str - 1), ypos)
+	term.write(str)
 end
 
 function printLeft(str, ypos)
@@ -391,7 +391,7 @@ function printLeft(str, ypos)
 end
 
 function printCentered(str, ypos)
-	term.setCursorPos(screenw/2 - #str/2 + 1, ypos)
+	term.setCursorPos(screenw / 2 - #str / 2 + 1, ypos)
 	term.write(str)
 end
 
@@ -400,25 +400,25 @@ function printRight(str, ypos)
 	term.write(str)
 end
 
-function readLines( sLines, _sReplaceChar )
-	term.setCursorBlink( true )
+function readLines(sLines, _sReplaceChar)
+	term.setCursorBlink(true)
 	local w, h = term.getSize()
 	local nPos = 0
 	local nSelect = 1
 	local vSelect = 1
-	local function redraw( _sCustomReplaceChar )
+	local function redraw(_sCustomReplaceChar)
 		local nScroll = 0
 		if sLines[nSelect].sx + nPos >= w then
 			nScroll = (sLines[nSelect].sx + nPos) - w
 		end
-		term.setCursorPos( sLines[nSelect].sx, sLines[nSelect].sy )
+		term.setCursorPos(sLines[nSelect].sx, sLines[nSelect].sy)
 		local sReplace = _sCustomReplaceChar or _sReplaceChar
 		if sReplace then
-			term.write( string.rep(sReplace, string.len(sLines[nSelect].text) - nScroll) )
+			term.write(string.rep(sReplace, string.len(sLines[nSelect].text) - nScroll))
 		else
-			term.write( string.sub( sLines[nSelect].text, nScroll + 1 ) )
+			term.write(string.sub(sLines[nSelect].text, nScroll + 1))
 		end
-		term.setCursorPos( sLines[nSelect].sx + nPos - nScroll, sLines[nSelect].sy )
+		term.setCursorPos(sLines[nSelect].sx + nPos - nScroll, sLines[nSelect].sy)
 	end
 	for nVar, tVar in ipairs(sLines) do
 		nSelect = nVar
@@ -433,7 +433,8 @@ function readLines( sLines, _sReplaceChar )
 	while true do
 		local sEvent, param = os.pullEvent()
 		if sEvent == "char" then
-			sLines[nSelect].text = string.sub( sLines[nSelect].text, 1, nPos ) .. param .. string.sub( sLines[nSelect].text, nPos + 1 )
+			sLines[nSelect].text = string.sub(sLines[nSelect].text, 1, nPos) ..
+			param .. string.sub(sLines[nSelect].text, nPos + 1)
 			nPos = nPos + 1
 			redraw()
 		elseif sEvent == "key" then
@@ -494,18 +495,20 @@ function readLines( sLines, _sReplaceChar )
 				-- Backspace
 				if nPos > 0 then
 					redraw(" ");
-					sLines[nSelect].text = string.sub( sLines[nSelect].text, 1, nPos - 1 ) .. string.sub( sLines[nSelect].text, nPos + 1 )
-					nPos = nPos - 1					
+					sLines[nSelect].text = string.sub(sLines[nSelect].text, 1, nPos - 1) ..
+					string.sub(sLines[nSelect].text, nPos + 1)
+					nPos = nPos - 1
 					redraw()
 				end
 			elseif param == keys.home then
 				-- Home
 				nPos = 0
-				redraw()		
+				redraw()
 			elseif param == keys.delete then
 				if nPos < string.len(sLines[nSelect].text) then
 					redraw(" ");
-					sLines[nSelect].text = string.sub( sLines[nSelect].text, 1, nPos ) .. string.sub( sLines[nSelect].text, nPos + 2 )				
+					sLines[nSelect].text = string.sub(sLines[nSelect].text, 1, nPos) ..
+					string.sub(sLines[nSelect].text, nPos + 2)
 					redraw()
 				end
 			elseif param == keys["end"] then
@@ -515,29 +518,29 @@ function readLines( sLines, _sReplaceChar )
 			end
 		end
 	end
-	term.setCursorBlink( false )
+	term.setCursorBlink(false)
 	return sLines
 end
 
 local function findModem()
-  for _, v in pairs( rs.getSides() ) do
-        if peripheral.isPresent( v ) and peripheral.getType( v ) == "modem" then
-          return true, v
-        end
-  end
-  return false, nil
+	for _, v in pairs(rs.getSides()) do
+		if peripheral.isPresent(v) and peripheral.getType(v) == "modem" then
+			return true, v
+		end
+	end
+	return false, nil
 end
 
 local function locate()
-	local x,y,z,facing
+	local x, y, z, facing
 	local exist, side = findModem()
 	if exist then
 		rednet.open(side)
 		printCentered("Receiving coordinates from host...", 4)
-		x,y,z = gps.locate(3)
+		x, y, z = gps.locate(3)
 		if x and y and z then
 			forward()
-			local tmpx,tmpy,tmpz = gps.locate(3)
+			local tmpx, tmpy, tmpz = gps.locate(3)
 			if tmpx > x then
 				facing = 3
 			elseif tmpx < x then
@@ -547,9 +550,9 @@ local function locate()
 			elseif tmpz < z then
 				facing = 2
 			end
-			printCentered("At:"..x.."/"..y.."/"..z.."/"..facing,3)
+			printCentered("At:" .. x .. "/" .. y .. "/" .. z .. "/" .. facing, 3)
 			loc.moveBack()
-			return x,y,z,facing
+			return x, y, z, facing
 		else
 			printCentered("Unable to get GPS cords.  Please,", 3)
 			printCentered("enter the turtles cords manually.", 4)
@@ -563,48 +566,50 @@ local function locate()
 	printLeft("     z: ", 8)
 	printLeft("  face: ", 9)
 	while true do
-		readLines( tCordsInput )
-		x,y,z,facing = tonumber(tCordsInput[1].text),tonumber(tCordsInput[2].text),tonumber(tCordsInput[3].text),tonumber(tCordsInput[4].text)
+		readLines(tCordsInput)
+		x, y, z, facing = tonumber(tCordsInput[1].text), tonumber(tCordsInput[2].text), tonumber(tCordsInput[3].text),
+			tonumber(tCordsInput[4].text)
 		if x ~= nil and y ~= nil and y > 0 and y < 256 and z ~= nil and facing ~= nil and facing < 4 and facing >= 0 then
-			return x,y,z,facing
+			return x, y, z, facing
 		end
 	end
 end
 
 local function drawHeader()
 	printCentered(program, 1)
-	printLeft(string.rep("-", screenw), 2) 
-	printLeft("["..version.."]"..string.rep("-", screenw-#author-#version-7).."[by "..author.."]", screenh)
+	printLeft(string.rep("-", screenw), 2)
+	printLeft("[" .. version .. "]" .. string.rep("-", screenw - #author - #version - 7) .. "[by " .. author .. "]",
+		screenh)
 end
 
 local function drawMainMenu()
 	term.clear()
 	drawHeader()
-	printLeft(string.rep("-", screenw), screenh-2)
+	printLeft(string.rep("-", screenw), screenh - 2)
 	if loc.paused then
 		if select == 1 then
-			printCentered("[RESUME]  REFUEL   SAVE   EXIT ", screenh-1)
+			printCentered("[RESUME]  REFUEL   SAVE   EXIT ", screenh - 1)
 		elseif select == 2 then
-			printCentered(" RESUME  [REFUEL]  SAVE   EXIT ", screenh-1)
+			printCentered(" RESUME  [REFUEL]  SAVE   EXIT ", screenh - 1)
 		elseif select == 3 then
-			printCentered(" RESUME   REFUEL  [SAVE]  EXIT ", screenh-1)
+			printCentered(" RESUME   REFUEL  [SAVE]  EXIT ", screenh - 1)
 		elseif select == 4 then
-			printCentered(" RESUME   REFUEL   SAVE  [EXIT]", screenh-1)
+			printCentered(" RESUME   REFUEL   SAVE  [EXIT]", screenh - 1)
 		end
 	else
-		printCentered("[PAUSE]", screenh-1)
+		printCentered("[PAUSE]", screenh - 1)
 	end
 end
 
 local function drawGPSMenu()
 	if select == 2 then
-		printCentered("[DONE]", screenh-1)
+		printCentered("[DONE]", screenh - 1)
 	elseif select == 1 then
 		term.clear()
 		drawHeader()
-		printLeft(string.rep("-", screenw), screenh-2)
-		printCentered(" DONE ", screenh-1)
-		loc.x,loc.y,loc.z,loc.facing = locate()
+		printLeft(string.rep("-", screenw), screenh - 2)
+		printCentered(" DONE ", screenh - 1)
+		loc.x, loc.y, loc.z, loc.facing = locate()
 		select = 2
 		drawGPSMenu()
 	end
@@ -619,8 +624,8 @@ local function drawRefuelMenu()
 		"|        YES          NO        |",
 		"+-------------------------------+"
 	}
-	for i=1,#refuelList do
-		if i == #refuelList-1 then
+	for i = 1, #refuelList do
+		if i == #refuelList - 1 then
 			if select == 1 then
 				printCentered("|       [YES]         NO        |", 3 + i)
 			elseif select == 2 then
@@ -641,10 +646,10 @@ local function drawRefuel()
 		"|              OK               |",
 		"+-------------------------------+"
 	}
-	for i=1,#refuelList do
-		if i == #refuelList-1 then
+	for i = 1, #refuelList do
+		if i == #refuelList - 1 then
 			printCentered("|             [OK]              |", 3 + i)
-		elseif i == #refuelList-3 then
+		elseif i == #refuelList - 3 then
 			printCentered(refuelList[i], 3 + i)
 			printCentered(fuel_level, 3 + i)
 		else
@@ -662,8 +667,8 @@ local function drawSaveMenu()
 		"|        YES          NO        |",
 		"+-------------------------------+"
 	}
-	for i=1,#saveList do
-		if i == #saveList-1 then
+	for i = 1, #saveList do
+		if i == #saveList - 1 then
 			if select == 1 then
 				printCentered("|       [YES]         NO        |", 3 + i)
 			elseif select == 2 then
@@ -684,8 +689,8 @@ local function drawExitMenu()
 		"|        YES          NO        |",
 		"+-------------------------------+"
 	}
-	for i=1,#exitList do
-		if i == #exitList-1 then
+	for i = 1, #exitList do
+		if i == #exitList - 1 then
 			if select == 1 then
 				printCentered("|       [YES]         NO        |", 3 + i)
 			elseif select == 2 then
@@ -706,10 +711,10 @@ local function drawResultMenu()
 		"|             [OK]              |",
 		"+-------------------------------+"
 	}
-	for i=1,#resultList do
-		if i == #resultList-1 then
+	for i = 1, #resultList do
+		if i == #resultList - 1 then
 			printCentered("|             [OK]              |", 3 + i)
-		elseif i == #resultList-4 then
+		elseif i == #resultList - 4 then
 			printCentered(resultList[i], 2 + i)
 			printCentered(ores_mined, 2 + i)
 		else
@@ -725,39 +730,39 @@ local function runOreFinder(_sSave)
 	local function rungui()
 		local mopt = {
 			["main"] = {
-				options = {"toggle_pause", "refuelmenu", "savemenu", "exitmenu"},
+				options = { "toggle_pause", "refuelmenu", "savemenu", "exitmenu" },
 				draw = drawMainMenu
 			},
 			["gpsmenu"] = {
-				options = {"locate", "exit"},
+				options = { "locate", "exit" },
 				draw = drawGPSMenu
 			},
 			["refuelmenu"] = {
-				options = {"refuel", "main"},
+				options = { "refuel", "main" },
 				draw = drawRefuelMenu
 			},
 			["refuel"] = {
-				options = {"main"},
+				options = { "main" },
 				draw = drawRefuel
 			},
 			["savemenu"] = {
-				options = {"save", "main"},
+				options = { "save", "main" },
 				draw = drawSaveMenu
 			},
 			["exitmenu"] = {
-				options = {"save_exit", "exit"},
+				options = { "save_exit", "exit" },
 				draw = drawExitMenu
 			},
 			["resultmenu"] = {
-				options = {"exit"},
+				options = { "exit" },
 				draw = drawResultMenu
 			}
 		}
 		tCordsInput = {
-			{text = "", sx = 9, sy = 6},
-			{text = "", sx = 9, sy = 7},
-			{text = "", sx = 9, sy = 8},
-			{text = "", sx = 9, sy = 9}
+			{ text = "", sx = 9, sy = 6 },
+			{ text = "", sx = 9, sy = 7 },
+			{ text = "", sx = 9, sy = 8 },
+			{ text = "", sx = 9, sy = 9 }
 		}
 		select = 1
 		fuel_level = tostring(turtle.getFuelLevel())
@@ -767,16 +772,16 @@ local function runOreFinder(_sSave)
 			local sEvent, param = os.pullEvent()
 			if sEvent == "key" then
 				if param == keys.up and select > 1 then
-					select = select-1
+					select = select - 1
 				elseif param == keys.down and select < #mopt[menustate].options then
 					if loc.paused then
-						select = select+1
+						select = select + 1
 					end
 				elseif param == keys.left and select > 1 then
-					select = select-1
+					select = select - 1
 				elseif param == keys.right and select < #mopt[menustate].options then
 					if loc.paused then
-						select = select+1
+						select = select + 1
 					end
 				elseif param == keys.enter then
 					if mopt[menustate].options[select] == "save" or mopt[menustate].options[select] == "save_exit" then
@@ -795,7 +800,7 @@ local function runOreFinder(_sSave)
 						end
 					elseif mopt[menustate].options[select] == "refuel" then
 						if turtle.getFuelLevel() ~= "unlimited" then
-							for i=tSave.ignore+1,16 do
+							for i = tSave.ignore + 1, 16 do
 								if turtle.getItemCount(i) > 0 then
 									turtle.select(i)
 									turtle.refuel(turtle.getItemCount(i))
@@ -817,8 +822,8 @@ local function runOreFinder(_sSave)
 	rungui()
 	menustate = "main"
 	if not tSave.startPos then
-		tSave.startPos = {x = loc.x, y = loc.y, z = loc.z, facing = loc.facing}
-		tSave.returnPos = {x = loc.x, y = loc.y, z = loc.z, facing = loc.facing}
+		tSave.startPos = { x = loc.x, y = loc.y, z = loc.z, facing = loc.facing }
+		tSave.returnPos = { x = loc.x, y = loc.y, z = loc.z, facing = loc.facing }
 	end
 	saveTable(tSave, _sFile)
 	parallel.waitForAny(oreFinder, rungui)
@@ -834,7 +839,7 @@ if turtle.getFuelLevel() > 0 or turtle.getFuelLevel() == "unlimited" then
 		_sFile = tostring(tArgs[1])
 		if fs.exists(_sFile) then
 			runOreFinder(_sFile)
-			term.setCursorPos(1,1)
+			term.setCursorPos(1, 1)
 			term.clear()
 		end
 	else
